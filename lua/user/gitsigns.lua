@@ -6,18 +6,43 @@ local M = {
 M.config = function()
   local icons = require "user.icons"
 
-  local wk = require "which-key"
-  wk.add {
-    { "<leader>gR", "<cmd>lua require 'gitsigns'.reset_buffer()<cr>", desc = "Reset Buffer" },
-    { "<leader>gd", "<cmd>Gitsigns diffthis HEAD<cr>", desc = "Git Diff" },
-    { "<leader>gj", "<cmd>lua require 'gitsigns'.next_hunk({navigation_message = false})<cr>", desc = "Next Hunk" },
-    { "<leader>gk", "<cmd>lua require 'gitsigns'.prev_hunk({navigation_message = false})<cr>", desc = "Prev Hunk" },
-    { "<leader>gl", "<cmd>lua require 'gitsigns'.blame_line()<cr>", desc = "Blame" },
-    { "<leader>gp", "<cmd>lua require 'gitsigns'.preview_hunk()<cr>", desc = "Preview Hunk" },
-    { "<leader>gr", "<cmd>lua require 'gitsigns'.reset_hunk()<cr>", desc = "Reset Hunk" },
-    { "<leader>gs", "<cmd>lua require 'gitsigns'.stage_hunk()<cr>", desc = "Stage Hunk" },
-    { "<leader>gu", "<cmd>lua require 'gitsigns'.undo_stage_hunk()<cr>", desc = "Undo Stage Hunk" },
-  }
+  local map = function(mode, lhs, rhs, desc)
+    vim.keymap.set(mode, lhs, rhs, { desc = desc, noremap = true, silent = true })
+  end
+
+  map("n", "<leader>gR", function()
+    require("gitsigns").reset_buffer()
+  end, "Reset Buffer")
+
+  map("n", "<leader>gd", "<cmd>Gitsigns diffthis HEAD<cr>", "Git Diff")
+
+  map("n", "<leader>gj", function()
+    require("gitsigns").next_hunk({ navigation_message = false })
+  end, "Next Hunk")
+
+  map("n", "<leader>gk", function()
+    require("gitsigns").prev_hunk({ navigation_message = false })
+  end, "Prev Hunk")
+
+  map("n", "<leader>gl", function()
+    require("gitsigns").blame_line()
+  end, "Blame")
+
+  map("n", "<leader>gp", function()
+    require("gitsigns").preview_hunk()
+  end, "Preview Hunk")
+
+  map("n", "<leader>gr", function()
+    require("gitsigns").reset_hunk()
+  end, "Reset Hunk")
+
+  map("n", "<leader>gs", function()
+    require("gitsigns").stage_hunk()
+  end, "Stage Hunk")
+
+  map("n", "<leader>gu", function()
+    require("gitsigns").undo_stage_hunk()
+  end, "Undo Stage Hunk")
 
   require("gitsigns").setup {
     signs = {

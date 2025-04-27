@@ -9,18 +9,19 @@ local M = {
 }
 
 local function lsp_keymaps(bufnr)
-  local map = function(mode, lhs, rhs)
-    vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, noremap = true, silent = true })
+  local map = function(mode, lhs, rhs, desc)
+    vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, noremap = true, silent = true, desc = desc })
   end
 
-  map("n", "gD", vim.lsp.buf.declaration)
-  map("n", "gd", vim.lsp.buf.definition)
+  map("n", "gD", vim.lsp.buf.declaration, "Go to Declaration")
+  map("n", "gd", vim.lsp.buf.definition, "Go to Definition")
+  map("n", "gT", vim.lsp.buf.type_definition, "Go to Type Definition")
+  map("n", "gI", vim.lsp.buf.implementation, "Go to Implementation")
+  map("n", "gr", vim.lsp.buf.references, "Go to References")
+  map("n", "gl", vim.diagnostic.open_float, "Show Diagnostics")
   map("n", "K", function()
     vim.lsp.buf.hover { border = "single", max_height = 25 }
-  end)
-  map("n", "gI", vim.lsp.buf.implementation)
-  map("n", "gr", vim.lsp.buf.references)
-  map("n", "gl", vim.diagnostic.open_float)
+  end, "Hover Documentation")
 end
 
 M.on_attach = function(client, bufnr)
@@ -43,23 +44,26 @@ M.toggle_inlay_hints = function()
 end
 
 function M.config()
-  local wk = require "which-key"
-  wk.add {
-   -- ["<leader>la"] = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action" },
-    { "<leader>lf", "<cmd>lua vim.lsp.buf.format({async = true, filter = function(client) return client.name ~= 'tsserver' end})<cr>", desc = "Format" },
-    { "<leader>lh", "<cmd>lua require('user.lspconfig').toggle_inlay_hints()<cr>", desc = "Hints" },
-    { "<leader>li", "<cmd>LspInfo<cr>", desc = "Info" },
-    { "<leader>lj", "<cmd>lua vim.diagnostic.goto_next()<cr>", desc = "Next Diagnostic" },
-    { "<leader>lk", "<cmd>lua vim.diagnostic.goto_prev()<cr>", desc = "Prev Diagnostic" },
-    { "<leader>ll", "<cmd>lua vim.lsp.codelens.run()<cr>", desc = "CodeLens Action" },
-    { "<leader>lq", "<cmd>lua vim.diagnostic.setloclist()<cr>", desc = "Quickfix" },
-    { "<leader>lr", "<cmd>lua vim.lsp.buf.rename()<cr>", desc = "Rename" },
-  }
+  local map = function(mode, lhs, rhs, desc)
+    vim.keymap.set(mode, lhs, rhs, { desc = desc, noremap = true, silent = true })
+  end
 
-  wk.add {
-    { "<leader>la", group = "LSP" },
-    { "<leader>laa", "<cmd>lua vim.lsp.buf.code_action()<cr>", desc = "Code Action", mode = "v" },
-  }
+  map("n", "<leader>lf", function()
+    vim.lsp.buf.format({ async = true, filter = function(client) return client.name ~= "tsserver" end })
+  end, "Format")
+
+  map("n", "<leader>lh", function()
+    require("user.lspconfig").toggle_inlay_hints()
+  end, "Hints")
+
+  map("n", "<leader>li", "<cmd>LspInfo<cr>", "Info")
+  map("n", "<leader>lj", "<cmd>lua vim.diagnostic.goto_next()<cr>", "Next Diagnostic")
+  map("n", "<leader>lk", "<cmd>lua vim.diagnostic.goto_prev()<cr>", "Prev Diagnostic")
+  map("n", "<leader>ll", "<cmd>lua vim.lsp.codelens.run()<cr>", "CodeLens Action")
+  map("n", "<leader>lq", "<cmd>lua vim.diagnostic.setloclist()<cr>", "Quickfix")
+  map("n", "<leader>lr", "<cmd>lua vim.lsp.buf.rename()<cr>", "Rename")
+
+  map("v", "<leader>laa", "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action (Visual)")
 
   local icons = require "user.icons"
 

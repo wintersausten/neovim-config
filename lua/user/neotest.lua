@@ -17,14 +17,29 @@ local M = {
 }
 
 function M.config()
-  local wk = require "which-key"
-  wk.add {
-    { "<leader>ta", "<cmd>lua require('neotest').run.attach()<cr>", desc = "Attach Test" },
-    { "<leader>td", "<cmd>lua require('neotest').run.run({strategy = 'dap'})<cr>", desc = "Debug Test" },
-    { "<leader>tf", "<cmd>lua require('neotest').run.run(vim.fn.expand('%'))<cr>", desc = "Test File" },
-    { "<leader>ts", "<cmd>lua require('neotest').run.stop()<cr>", desc = "Test Stop" },
-    { "<leader>tt", "<cmd>lua require'neotest'.run.run()<cr>", desc = "Test Nearest" },
-  }
+  local map = function(mode, lhs, rhs, desc)
+    vim.keymap.set(mode, lhs, rhs, { desc = desc, noremap = true, silent = true })
+  end
+
+  map("n", "<leader>ta", function()
+    require("neotest").run.attach()
+  end, "Attach Test")
+
+  map("n", "<leader>td", function()
+    require("neotest").run.run({ strategy = "dap" })
+  end, "Debug Test")
+
+  map("n", "<leader>tf", function()
+    require("neotest").run.run(vim.fn.expand("%"))
+  end, "Test File")
+
+  map("n", "<leader>ts", function()
+    require("neotest").run.stop()
+  end, "Test Stop")
+
+  map("n", "<leader>tt", function()
+    require("neotest").run.run()
+  end, "Test Nearest")
 
   ---@diagnostic disable: missing-fields
   require("neotest").setup {

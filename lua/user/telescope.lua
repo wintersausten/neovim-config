@@ -4,18 +4,21 @@ local M = {
 }
 
 function M.config()
-  local wk = require "which-key"
-  wk.add {
-    { "<leader>fb", "<cmd>Telescope git_branches<cr>", desc = "Checkout branch" },
-    { "<leader>fc", "<cmd>Telescope colorscheme<cr>", desc = "Colorscheme" },
-    { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find files" },
-    { "<leader>fg", "<cmd>Telescope git_files<cr>", desc = "Git files" },
-    { "<leader>fh", "<cmd>Telescope help_tags<cr>", desc = "Help" },
-    { "<leader>fl", "<cmd>Telescope resume<cr>", desc = "Last Search" },
-    { "<leader>fp", "<cmd>lua require('telescope').extensions.projects.projects()<cr>", desc = "Projects" },
-    { "<leader>fr", "<cmd>Telescope oldfiles<cr>", desc = "Recent File" },
-    { "<leader>ft", "<cmd>Telescope live_grep<cr>", desc = "Find Text" },
-  }
+  local map = function(mode, lhs, rhs, desc)
+    vim.keymap.set(mode, lhs, rhs, { desc = desc, noremap = true, silent = true })
+  end
+
+  map("n", "<leader>fb", "<cmd>Telescope git_branches<cr>", "Checkout branch")
+  map("n", "<leader>fc", "<cmd>Telescope colorscheme<cr>", "Colorscheme")
+  map("n", "<leader>ff", "<cmd>Telescope find_files<cr>", "Find files")
+  map("n", "<leader>fg", "<cmd>Telescope git_files<cr>", "Git files")
+  map("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", "Help")
+  map("n", "<leader>fl", "<cmd>Telescope resume<cr>", "Last Search")
+  map("n", "<leader>fp", function()
+    require("telescope").extensions.projects.projects()
+  end, "Projects")
+  map("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", "Recent File")
+  map("n", "<leader>ft", "<cmd>Telescope live_grep<cr>", "Find Text")
 
   local icons = require "user.icons"
   local actions = require "telescope.actions"
