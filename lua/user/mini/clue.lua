@@ -9,7 +9,7 @@ local M = {
           width = 40,
           border = "rounded",
         },
-        delay = 0,
+        delay = 500,
       },
       triggers = {
         { mode = 'n', keys = '<Leader>' },
